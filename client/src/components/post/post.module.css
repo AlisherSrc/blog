@@ -1,0 +1,28 @@
+.post{
+    display: flex;
+    gap: 15px;
+    margin-bottom: 30px;
+}
+.post, .info{
+    display: flex;
+    gap: 10px;
+    
+    margin: 6px 0;
+    color: #555;
+    font-size: 0.7rem;
+}
+
+.post__texts, .info, .author{
+    flex: 1;
+    font-size: 1.8rem;
+    color: #333;
+}
+
+.image_container{
+    flex: 1;
+}
+
+.description{
+    margin: 10px 0;
+    line-height: 1.4rem;
+}
