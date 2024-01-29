@@ -1,9 +1,12 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import styles from './login.module.css';
 import { useNavigate } from 'react-router-dom';
+import { UserContext } from '../../UserContext';
 
 
 const Login = () => {
+    const {setUserInfo} = useContext(UserContext);
+
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const nav = useNavigate();
@@ -11,7 +14,6 @@ const Login = () => {
     const login = async (e) => {
         e.preventDefault();
 
-        console.log(username, password);
         const response = await fetch('http://localhost:4000/login', {
             method: "POST",
             body: JSON.stringify({ username, password }),
@@ -20,7 +22,10 @@ const Login = () => {
         });
 
         if (response.ok) {
-            nav('/');
+            response.json().then(userInfo => {
+                setUserInfo(userInfo);
+                nav("/");
+            });
         }else {
             alert("Wrong credentials");
         }
