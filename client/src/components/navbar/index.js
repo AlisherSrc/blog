@@ -13,6 +13,8 @@ const Navbar = () => {
             res.json().then(userInfo => {
                 setUserInfo(userInfo);
             })
+        }).catch((err) => {
+            console.log(err);
         })
     },[]);
 
@@ -31,7 +33,7 @@ const Navbar = () => {
         <nav>
             {username && (
                 <>
-                    <Link to="create">Create new post</Link>
+                    <Link to="/create">Create new post</Link>
                     <a onClick={logout}>Logout</a>
                 </>
             )}
