@@ -2,6 +2,7 @@ import { useState } from 'react';
 import styles from './createpost.module.css';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
+import { useNavigate } from 'react-router-dom';
 
 const modules = {
     toolbar: [
@@ -27,6 +28,8 @@ const CreatePost = () => {
     const [description, setDescription] = useState('');
     const [content,setContent] = useState('');
     const [files,setFiles] = useState('');
+    
+    const nav = useNavigate();
 
     const createNewPost = async (e) => {
         e.preventDefault();
@@ -42,6 +45,12 @@ const CreatePost = () => {
             method: 'POST',
             body: data,
         });
+
+        if(response.ok){
+            nav('/')
+        }else{
+            alert("Something went wrong");
+        }
     }
 
     return (
