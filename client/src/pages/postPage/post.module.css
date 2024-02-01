@@ -1,0 +1,36 @@
+.post_page .image_container{
+    max-height: 200px;
+    display: flex;
+    overflow: hidden;
+}
+
+.post_page .image_container img{
+    object-fit: cover;
+    object-position: center center;
+    width: 100%;
+}
+
+.post_page a{
+    color: #333;
+    text-decoration: underline;
+}
+.post_page h1{
+    text-align: center;
+    margin: 10px 0 5px;
+}
+.post_page time{
+    text-align: center;
+    display: block;
+    font-size: .7rem;
+    color: #aaa;
+}
+.post_page .author{
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 0.7rem;
+    font-weight: bold;
+}
+
+.post_page .content{
+    line-height: 1.6rem;
+}

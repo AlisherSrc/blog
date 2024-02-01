@@ -1,13 +1,23 @@
 .post{
-    display: flex;
+    display: grid;
+    grid-template-columns: 1fr;
     gap: 15px;
     margin-bottom: 30px;
 }
-.post, .info{
+
+@media screen and (min-width: 700px){
+    .post{
+        grid-template-columns: 0.9fr 1.1fr;
+    }
+}
+
+.info{
     display: flex;
     gap: 10px;
-    
     margin: 6px 0;
+}
+
+.post, .info{
     color: #555;
     font-size: 0.7rem;
 }

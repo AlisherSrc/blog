@@ -1,7 +1,7 @@
 import styles from "./home.module.css";
-import Post from "../../components/post/post";
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../../UserContext";
+import Post from "../../components/post";
 
 const Home = () => {
     const {userInfo} = useContext(UserContext);
@@ -18,7 +18,7 @@ const Home = () => {
  
 
     return (
-        <div>
+        <div className={`${styles.posts}`}>
             {(posts.length > 0) ? posts.map((post) => (
                  <Post {...post} />
             )) : <p>Loading...</p>}

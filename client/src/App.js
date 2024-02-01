@@ -1,13 +1,13 @@
 import './App.css';
 import Navbar from './components/navbar';
-import Post from './components/post/post';
 import { Routes, Route } from "react-router-dom";
-import Login from './pages/login';
+import Login from './pages/loginPage';
 import Layout from './layout';
-import Home from './pages/home';
-import Register from './pages/register';
+import Home from './pages/homePage';
+import Register from './pages/registerPage';
 import { UserContextProvider } from './UserContext';
-import CreatePost from './pages/create_post';
+import CreatePost from './pages/createPostPage';
+import PostPage from './pages/postPage';
 
 function App() {
 
@@ -21,6 +21,7 @@ function App() {
           <Route path='/login' element={<Login />} />
           <Route path='/register' element={<Register />} />
           <Route path='/create' element={<CreatePost />} />
+          <Route path='/post/:id' element={<PostPage />} />
         </Route>
       </Routes>
     </UserContextProvider>

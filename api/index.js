@@ -99,13 +99,13 @@ app.post("/post", uploadMiddleware.single('file'), async (req, res) => {
             description,
             content
         } = req.body;
-    
+
         const postDoc = await Post.create({
             title,
             description,
             content,
             cover: newPath,
-            author:info.id,
+            author: info.id,
         });
 
         res.json(postDoc);
@@ -113,9 +113,17 @@ app.post("/post", uploadMiddleware.single('file'), async (req, res) => {
 })
 
 app.get('/post', async (req, res) => {
-    const posts = await Post.find().populate('author',['username']).sort({createdAt:-1});
+    const posts = await Post.find().populate('author', ['username']).sort({ createdAt: -1 });
 
     res.json(posts);
+})
+
+app.get('/post/:id', async (req, res) => {
+    const {id} = req.params;
+
+    const post = await Post.findById(id).populate('author',['username']);
+
+    res.json(post);
 })
 
 app.listen(4000)
