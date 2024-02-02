@@ -1,7 +1,7 @@
 import styles from "./post.module.css";
 import { formatISO9075, isValid, parseISO, format } from 'date-fns';
 import { Link } from "react-router-dom";
-import { formatDate } from "../../tools";
+import { formatDate } from "../../tools/formatDate";
 
 
 const Post = (props) => {

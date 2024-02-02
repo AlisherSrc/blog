@@ -6,3 +6,4 @@ export const formatDate = (dateString) => {
 
     return isValid(date) ? format(new Date(dateString), 'dd-MM-yyyy') : 'Invalid Date';
 }
+
