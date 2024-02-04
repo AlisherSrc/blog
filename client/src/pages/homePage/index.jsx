@@ -5,7 +5,7 @@ import Post from "../../components/post";
 
 const Home = () => {
     const {userInfo} = useContext(UserContext);
-    const [posts,setPosts] = useState([]);
+    const [posts,setPosts] = useState(null);
 
     useEffect(() => {
         fetch('http://localhost:4000/post').then((res) => {
@@ -19,9 +19,12 @@ const Home = () => {
 
     return (
         <div className={`${styles.posts}`}>
-            {(posts.length > 0) ? posts.map((post) => (
+            {(posts) ? 
+            (posts.length <= 0 ? <p>Sorry, there are no posts yet, stay tuned!</p>  : posts.map((post) => (
                  <Post {...post} />
+            )
             )) : <p>Loading...</p>}
+
         </div>
     )
 }

@@ -81,13 +81,12 @@ app.post("/logout", (req, res) => {
 })
 
 app.post("/post", uploadMiddleware.single('file'), async (req, res) => {
-    if (req.file) {
-        const { originalname, path } = req.file;
-        const parts = originalname.split(".");
-        const ext = parts[parts.length - 1];
-        const newPath = path + "." + ext;
-        fs.renameSync(path, newPath);
-    }
+
+    const { originalname, path } = req.file;
+    const parts = originalname.split(".");
+    const ext = parts[parts.length - 1];
+    const newPath = path + "." + ext;
+    fs.renameSync(path, newPath);
 
 
     // Done with file
@@ -134,7 +133,7 @@ app.put('/post/:id', uploadMiddleware.single('file'), async (req, res) => {
         const { originalname, path } = req.file;
         const parts = originalname.split(".");
         const ext = parts[parts.length - 1];
-        const newPath = path + "." + ext;
+        newPath = path + "." + ext;
         fs.renameSync(path, newPath);
     }
     const { token } = req.cookies;
@@ -163,6 +162,20 @@ app.put('/post/:id', uploadMiddleware.single('file'), async (req, res) => {
 
         res.json(postDoc);
     });
+})
+
+app.delete('/post/:id', async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const deletedPost = await Post.findByIdAndDelete(id);
+        if (!deletedPost) {
+            return res.status(404).json('Post not found');
+        }
+        res.json("Post deleted succesfully")
+    } catch (error) {
+        res.status(500).json("Error deleting post");
+    }
 })
 
 app.listen(4000)
