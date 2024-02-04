@@ -81,11 +81,13 @@ app.post("/logout", (req, res) => {
 })
 
 app.post("/post", uploadMiddleware.single('file'), async (req, res) => {
-    const { originalname, path } = req.file;
-    const parts = originalname.split(".");
-    const ext = parts[parts.length - 1];
-    const newPath = path + "." + ext;
-    fs.renameSync(path, newPath);
+    if (req.file) {
+        const { originalname, path } = req.file;
+        const parts = originalname.split(".");
+        const ext = parts[parts.length - 1];
+        const newPath = path + "." + ext;
+        fs.renameSync(path, newPath);
+    }
 
 
     // Done with file
@@ -119,11 +121,48 @@ app.get('/post', async (req, res) => {
 })
 
 app.get('/post/:id', async (req, res) => {
-    const {id} = req.params;
+    const { id } = req.params;
 
-    const post = await Post.findById(id).populate('author',['username']);
+    const post = await Post.findById(id).populate('author', ['username']);
 
     res.json(post);
+})
+
+app.put('/post/:id', uploadMiddleware.single('file'), async (req, res) => {
+    let newPath = null;
+    if (req.file) {
+        const { originalname, path } = req.file;
+        const parts = originalname.split(".");
+        const ext = parts[parts.length - 1];
+        const newPath = path + "." + ext;
+        fs.renameSync(path, newPath);
+    }
+    const { token } = req.cookies;
+
+    jwt.verify(token, secret, {}, async (err, info) => {
+        if (err) throw err;
+        const {
+            title,
+            description,
+            content,
+            id
+        } = req.body;
+
+        const postDoc = await Post.findById(id);
+        const isAuthor = JSON.stringify(postDoc.author) === JSON.stringify(info.id);
+        if (!isAuthor) {
+            return res.status(400).json("You are not the author")
+        }
+
+        await postDoc.updateOne({
+            title,
+            description,
+            content,
+            cover: newPath ? newPath : postDoc.cover,
+        })
+
+        res.json(postDoc);
+    });
 })
 
 app.listen(4000)
