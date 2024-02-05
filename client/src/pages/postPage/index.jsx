@@ -4,6 +4,7 @@ import { Link, useParams } from 'react-router-dom';
 import { isValid, parseISO, format } from 'date-fns';
 import { formatDate } from '../../tools/formatDate';
 import { UserContext } from '../../UserContext';
+import { HOST } from '../../globals';
 
 const Post = () => {
     const [postInfo, setPostInfo] = useState(null);
@@ -11,7 +12,7 @@ const Post = () => {
     const { id } = useParams();
 
     useEffect(() => {
-        fetch(`http://localhost:4000/post/${id}`).then((resp) => {
+        fetch(`${HOST}/post/${id}`).then((resp) => {
             resp.json().then((post) => {
                 setPostInfo(post);
             });

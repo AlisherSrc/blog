@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import styles from './register.module.css';
+import { HOST } from '../../globals';
 
 const Register = () => {
 
@@ -9,7 +10,7 @@ const Register = () => {
     const register = async (e) => {
         e.preventDefault();
 
-        const response = await fetch("http://localhost:4000/register",{
+        const response = await fetch(`${HOST}/register`,{
             method: "POST",
             body: JSON.stringify({username,password}),
             headers: {"Content-Type":"application/json"},

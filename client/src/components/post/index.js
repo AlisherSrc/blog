@@ -2,6 +2,7 @@ import styles from "./post.module.css";
 import { formatISO9075, isValid, parseISO, format } from 'date-fns';
 import { Link } from "react-router-dom";
 import { formatDate } from "../../tools/formatDate";
+import { HOST } from "../../globals";
 
 
 const Post = (props) => {
@@ -19,7 +20,7 @@ const Post = (props) => {
     return <div className={`${styles.post}`}>
         <div className={`${styles.image_container}`}>
             <Link to={`/post/${_id}`}>
-                <img src={`http://localhost:4000/${cover}`} alt="post" />
+                <img src={`${HOST}/${cover}`} alt="post" />
             </Link>
         </div>
         <div className={`${styles.post__texts}`}>

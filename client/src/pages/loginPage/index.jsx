@@ -2,6 +2,7 @@ import { useContext, useState } from 'react';
 import styles from './login.module.css';
 import { useNavigate } from 'react-router-dom';
 import { UserContext } from '../../UserContext';
+import { HOST } from '../../globals';
 
 
 const Login = () => {
@@ -14,7 +15,7 @@ const Login = () => {
     const login = async (e) => {
         e.preventDefault();
 
-        const response = await fetch('http://localhost:4000/login', {
+        const response = await fetch(`${HOST}/login`, {
             method: "POST",
             body: JSON.stringify({ username, password }),
             headers: { "Content-Type": "application/json" },

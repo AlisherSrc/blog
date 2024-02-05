@@ -22,6 +22,7 @@
   "scripts": {
     "dev": "nodemon index.js",
     "start": "node index.js",
+    "prebuild": "yarn install",
     "build": "babel index.js --out-dir ./dist"
   }
 }

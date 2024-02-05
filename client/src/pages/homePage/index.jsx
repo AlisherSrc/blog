@@ -2,13 +2,14 @@ import styles from "./home.module.css";
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../../UserContext";
 import Post from "../../components/post";
+import { HOST } from "../../globals";
 
 const Home = () => {
     const {userInfo} = useContext(UserContext);
     const [posts,setPosts] = useState(null);
 
     useEffect(() => {
-        fetch('http://localhost:4000/post').then((res) => {
+        fetch(`${HOST}/post`).then((res) => {
             res.json().then((posts) => {
                 console.log(posts);
                 setPosts(posts);

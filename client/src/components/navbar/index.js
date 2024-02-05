@@ -2,12 +2,13 @@ import { Link } from "react-router-dom";
 import styles from "./navbar.module.css";
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../../UserContext";
+import { HOST } from "../../globals";
 
 const Navbar = () => {
     const {setUserInfo,userInfo} = useContext(UserContext);
 
     useEffect(() => {
-        fetch("http://localhost:4000/profile", {
+        fetch(`${HOST}/profile`, {
             credentials: "include",
         }).then((res) => {
             res.json().then(userInfo => {
@@ -21,7 +22,7 @@ const Navbar = () => {
     const username = userInfo?.username;
 
     const logout = () => {
-        fetch("http://localhost:4000/logout",{
+        fetch(`${HOST}/logout`,{
             credentials: 'include',
             method: "POST",
         });

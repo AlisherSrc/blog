@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom';
 import 'react-quill/dist/quill.snow.css';
 import { useNavigate } from 'react-router-dom';
 import Editor from '../../tools/editor';
+import { HOST } from '../../globals';
 
 const EditPost = () => {
     const { id } = useParams();
@@ -14,7 +15,7 @@ const EditPost = () => {
     const nav = useNavigate();
 
     useEffect(() => {
-        fetch(`http://localhost:4000/post/${id}`).then((res) => {
+        fetch(`${HOST}/post/${id}`).then((res) => {
             res.json().then((post) => {
                 setTitle(post.title);
                 setDescription(post.description);
@@ -35,7 +36,7 @@ const EditPost = () => {
         data.set('id', id);
         files?.[0] && data.set('file', files?.[0]);
 
-        await fetch('http://localhost:4000/post/${id}', {
+        await fetch(`${HOST}/post/${id}`, {
             method: "PUT",
             body: data,
             credentials: 'include'
@@ -51,7 +52,7 @@ const EditPost = () => {
             "Do you really want to delete this post?"
         )
         if (confirmBox === true) {
-            await fetch(`http://localhost:4000/post/${id}`, {
+            await fetch(`${HOST}/post/${id}`, {
                 method: "DELETE",
             });
 
