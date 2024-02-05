@@ -21,6 +21,6 @@
   "scripts": {
     "dev": "nodemon index.js",
     "start": "node index.js",
-    "build": "babel src --out-dir dist"
+    "build": "./node_modules/.bin/babel src --out-dir dist"
   }
 }
