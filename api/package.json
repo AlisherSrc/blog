@@ -22,6 +22,6 @@
   "scripts": {
     "dev": "nodemon index.js",
     "start": "node index.js",
-    "build": "./node_modules/.bin/babel src --out-dir dist"
+    "build": "npx babel src --out-dir dist"
   }
 }
