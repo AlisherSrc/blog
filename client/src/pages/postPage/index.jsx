@@ -1,7 +1,6 @@
 import { useContext, useEffect, useState } from 'react';
 import styles from './post.module.css';
 import { Link, useParams } from 'react-router-dom';
-import { isValid, parseISO, format } from 'date-fns';
 import { formatDate } from '../../tools/formatDate';
 import { UserContext } from '../../UserContext';
 import { HOST } from '../../globals';
@@ -38,7 +37,7 @@ const Post = () => {
                         </div>
                     )}
                     <div className={`${styles.image_container}`}>
-                        <img src={`http://localhost:4000/${postInfo.cover}`} />
+                        <img src={`http://localhost:4000/${postInfo.cover}`} alt='post' />
                     </div>
                     <div className={`${styles.content}`} dangerouslySetInnerHTML={{ __html: postInfo.content }} />
                 </div>

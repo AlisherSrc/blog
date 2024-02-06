@@ -1,5 +1,4 @@
 import styles from "./post.module.css";
-import { formatISO9075, isValid, parseISO, format } from 'date-fns';
 import { Link } from "react-router-dom";
 import { formatDate } from "../../tools/formatDate";
 import { HOST } from "../../globals";
@@ -11,7 +10,6 @@ const Post = (props) => {
         cover,
         title,
         description,
-        content,
         author,
         createdAt
     } = props;
@@ -28,7 +26,7 @@ const Post = (props) => {
                 <h2>{title}</h2>
             </Link>
             <p className={`${styles.info}`}>
-                <a href="#" className={`${styles.author}`}>{author?.username}</a>
+                <a className={`${styles.author}`}>{author?.username}</a>
                 <time className={`${styles.description}`}>{formatDate(createdAt)}</time>
             </p>
 

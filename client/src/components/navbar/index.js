@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import styles from "./navbar.module.css";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import { UserContext } from "../../UserContext";
 import { HOST } from "../../globals";
 
@@ -30,7 +30,7 @@ const Navbar = () => {
     }
 
     return <>
-        <Link to="/" className={`${styles.logo}`}>BlogLogo</Link>
+        <Link to="/" className={`${styles.logo}`}>AlisherSk Blog</Link>
         <nav>
             {username && (
                 <>

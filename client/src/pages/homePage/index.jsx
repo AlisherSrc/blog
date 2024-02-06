@@ -1,11 +1,9 @@
 import styles from "./home.module.css";
-import { useContext, useEffect, useState } from "react";
-import { UserContext } from "../../UserContext";
+import { useEffect, useState } from "react";
 import Post from "../../components/post";
 import { HOST } from "../../globals";
 
 const Home = () => {
-    const {userInfo} = useContext(UserContext);
     const [posts,setPosts] = useState(null);
 
     useEffect(() => {
