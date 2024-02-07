@@ -37,7 +37,7 @@ const Post = () => {
                         </div>
                     )}
                     <div className={`${styles.image_container}`}>
-                        <img src={`http://localhost:4000/${postInfo.cover}`} alt='post' />
+                        <img src={`${HOST}/${postInfo.cover}`} alt='post' />
                     </div>
                     <div className={`${styles.content}`} dangerouslySetInnerHTML={{ __html: postInfo.content }} />
                 </div>
