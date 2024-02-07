@@ -16,7 +16,7 @@ const fs = require('fs');
 
 const uploadMiddleware = multer({ dest: 'uploads/' });
 
-app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
+app.use(cors({ credentials: true, origin: "https://alisher-sk.onrender.com" }));
 app.use(express.json());
 app.use(cookieParser());
 // for responding with files without creating an endpoint for it
