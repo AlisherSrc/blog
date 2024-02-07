@@ -15,8 +15,20 @@ const multer = require("multer");
 const fs = require('fs');
 
 const uploadMiddleware = multer({ dest: 'uploads/' });
+const allowedOrigins = process.env.CORS_ORIGINS.split(',');
 
-app.use(cors({ credentials: true, origin: "https://alishersk-blog.web.app" }));
+app.use(cors({
+    credentials: true,
+    origin: (origin, callback) => {
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    }
+}));
+
+// app.use(cors({ credentials: true, origin: "https://alishersk-blog.web.app" }));
 app.use(express.json());
 app.use(cookieParser());
 // for responding with files without creating an endpoint for it
