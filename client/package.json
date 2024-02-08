@@ -11,6 +11,8 @@
     "firebase-tools": "^13.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-helmet": "^6.1.0",
+    "react-helmet-async": "^2.0.4",
     "react-quill": "^2.0.0",
     "react-router-dom": "^6.21.3",
     "react-scripts": "5.0.1",
