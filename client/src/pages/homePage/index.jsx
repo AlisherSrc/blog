@@ -9,7 +9,6 @@ const Home = () => {
     useEffect(() => {
         fetch(`${HOST}/post`).then((res) => {
             res.json().then((posts) => {
-                console.log(posts);
                 setPosts(posts);
             })
         })
@@ -20,7 +19,7 @@ const Home = () => {
         <div className={`${styles.posts}`}>
             {(posts) ? 
             (posts.length <= 0 ? <p>Sorry, there are no posts yet, stay tuned!</p>  : posts.map((post) => (
-                 <Post {...post} />
+                 <Post {...post} key={post._id} />
             )
             )) : <p>Loading...</p>}
 
