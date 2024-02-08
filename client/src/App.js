@@ -19,12 +19,12 @@ function App() {
       <Helmet>
         <title>AlisherSK - Blog</title>
         <meta charset="utf-8" />
-        <link rel="icon" href="%PUBLIC_URL%/favicon_1.ico" />
+        <link rel="icon" href="https://alishersk-blog.web.app/favicon_1.ico" />
         <link rel="canonical" href="https://alishersk-blog.web.app/" />
         {/* Social media */}
         <meta property="og:title" content="AlisherSK - Blog" />
         <meta property="og:description" content="AlisherSk - blog about web development" />
-        <meta property="og:image" content="%PUBLIC_URL%/social-share-image.jpg" />
+        <meta property="og:image" content="https://firebasestorage.googleapis.com/v0/b/alishersk-blog.appspot.com/o/blog_cover.png?alt=media&token=552c6779-d4c3-4a49-a648-9230b80a9bcd" />
         <meta property="og:url" content="https://alishersk-blog.web.app/" />
         <meta property="og:type" content="website" />
         <meta property="og:site_name" content="AlisherSK Blog" />
@@ -33,12 +33,12 @@ function App() {
         <meta name="twitter:site" content="@Alishror" />
         <meta name="twitter:title" content="AlisherSK - Blog" />
         <meta name="twitter:description" content="AlisherSk - blog about web development" />
-        <meta name="twitter:image" content="%PUBLIC_URL%/twitter-card-image.jpg" />
+        <meta name="twitter:image" content="https://firebasestorage.googleapis.com/v0/b/alishersk-blog.appspot.com/o/blog_cover.png?alt=media&token=552c6779-d4c3-4a49-a648-9230b80a9bcd" />
         {/* Robots */}
         <meta name="robots" content="index,follow" />
         <meta name="googlebot" content="index,follow" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <meta name="theme-color" content="#181a1b" />
+        <meta name="theme-color" content="#fff" />
         <meta name="description" content="AlisherSk - blog about web development" />
       </Helmet>
       <Routes>

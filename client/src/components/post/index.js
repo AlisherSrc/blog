@@ -29,7 +29,6 @@ const Post = (props) => {
                 <a className={`${styles.author}`}>{author?.username}</a>
                 <time className={`${styles.description}`}>{formatDate(createdAt)}</time>
             </p>
-
             <p>{description}</p>
         </div>
     </div>
