@@ -1,6 +1,7 @@
 
 body{
-  color: #333;
+  color: var(--primary-text-color);
+  background-color: var(--background-color);
 }
 main{
   padding: 10px;
@@ -30,17 +31,17 @@ form input{
   width: 100%;
   margin-bottom: 5px;
   padding: 5px 7px;
-  background-color: #fff;
-  border: 2px solid #ddd;
+  background-color: var(--background-color);
+  border: 2px solid var(--border-color);
   border-radius: 5px;
 }
 
 form button{
   display: block;
   width: 100%;
-  background-color: #555;
+  background-color: var(--foreground-color);
   border: 0;
-  color: #fff;
+  color: var(--secondary-text-color);
   border-radius: 5px;
   padding: 7px 0;
 }

@@ -3,9 +3,11 @@ import styles from "./navbar.module.css";
 import { useContext, useEffect } from "react";
 import { UserContext } from "../../UserContext";
 import { HOST } from "../../globals";
+import Toggle from "../toggle";
 
 const Navbar = () => {
     const {setUserInfo,userInfo} = useContext(UserContext);
+    const {isDark,setIsDark} = useContext(UserContext);
 
     useEffect(() => {
         fetch(`${HOST}/profile`, {
@@ -18,6 +20,7 @@ const Navbar = () => {
             console.log(err);
         })
     },[]);
+
 
     const username = userInfo?.username;
 
@@ -38,6 +41,7 @@ const Navbar = () => {
                     <a onClick={logout}>Logout</a>
                 </>
             )}
+            <Toggle isChecked={isDark} handleChange={() => setIsDark(!isDark)}/>
         </nav>
     </>
 }

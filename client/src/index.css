@@ -7,6 +7,28 @@
   color: inherit;
 }
 
+:root{
+  --background-color: #fff;
+  --foreground-color: #333;
+  --primary-text-color: #333;
+  --secondary-text-color: #fff;
+  --border-color: #ddd;
+
+  --toggle-bg: #f0eb9d;
+  --toggle-fg: #ffd000;
+}
+/* If tag has such attribute */
+[data-theme="dark"]{
+  --background-color: #131516;
+  --foreground-color: #262a2b;
+  --primary-text-color: #c8c3bc;
+  --secondary-text-color: #e8e6e3;
+  --border-color:#736b5e;
+
+  --toggle-bg: #283452;
+  --toggle-fg: #00a6ff;
+}
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',

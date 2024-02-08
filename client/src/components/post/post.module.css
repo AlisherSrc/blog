@@ -25,7 +25,7 @@
 .post__texts, .info, .author{
     flex: 1;
     font-size: 1.8rem;
-    color: #333;
+    color: var(--primary-text-color);
 }
 
 .image_container{

@@ -11,7 +11,7 @@
 }
 
 .post_page a{
-    color: #333;
+    color: var(--foreground-color);
     text-decoration: underline;
 }
 .post_page h1{
@@ -42,8 +42,8 @@
 
 .post_page .edit_btn{
     display: inline-block;
-    background-color: #333;
-    color: #fff;
+    background-color: var(--foreground-color);
+    color: var(--secondary-text-color);
     align-items: center;
     gap: 5px;
     padding: 15px 30px;
