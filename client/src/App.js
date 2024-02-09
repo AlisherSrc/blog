@@ -9,6 +9,7 @@ import CreatePost from './pages/createPostPage';
 import PostPage from './pages/postPage';
 import EditPost from './pages/editPostPage';
 import { Helmet } from 'react-helmet';
+import ErrorPage from './pages/error';
 
 function App() {
 
@@ -50,6 +51,7 @@ function App() {
           <Route path='/create' element={<CreatePost />} />
           <Route path='/post/:id' element={<PostPage />} />
           <Route path='/edit/:id' element={<EditPost />} />
+          <Route path='*' element={<ErrorPage />} />
         </Route>
       </Routes>
     </UserContextProvider>
