@@ -9,9 +9,9 @@ import { HOST } from '../../globals';
 const CreatePost = () => {
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
-    const [content,setContent] = useState('');
-    const [files,setFiles] = useState('');
-    
+    const [content, setContent] = useState('');
+    const [files, setFiles] = useState('');
+
     const nav = useNavigate();
 
     const createNewPost = async (e) => {
@@ -19,10 +19,10 @@ const CreatePost = () => {
 
         const data = new FormData();
 
-        data.set('title',title);
-        data.set('description',description);
-        data.set('content',content);
-        data.set('file',files[0]);
+        data.set('title', title);
+        data.set('description', description);
+        data.set('content', content);
+        data.set('file', files[0]);
 
         const response = await fetch(`${HOST}/post`, {
             method: 'POST',
@@ -30,10 +30,12 @@ const CreatePost = () => {
             credentials: 'include',
         });
 
-        if(response.ok){
-            nav('/')
-        }else{
-            alert("Something went wrong");
+        if (response.ok) {
+            nav('/');
+        } else {
+            const errorText = await response.text(); // or response.json() if the server responds with JSON
+            console.error('Failed to create post:', errorText);
+            alert(`Something went wrong: ${errorText}`);
         }
     }
 
@@ -41,8 +43,8 @@ const CreatePost = () => {
         <form className={`${styles.form}`} onSubmit={(e) => createNewPost(e)}>
             <input type='title' placeholder='title' value={title} onChange={(e) => setTitle(e.target.value)} />
             <input type="summary" placeholder='description' value={description} onChange={(e) => setDescription(e.target.value)} />
-            <input type='file' onChange={(e) => setFiles(e.target.files)}/>
-            <Editor value={content} onChange={newValue => setContent(newValue)}/>
+            <input type='file' onChange={(e) => setFiles(e.target.files)} />
+            <Editor value={content} onChange={newValue => setContent(newValue)} />
             <button>Create post</button>
         </form>
     )

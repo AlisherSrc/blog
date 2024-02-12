@@ -66,11 +66,15 @@ app.post('/login', async (req, res) => {
         if (passOk) {
             jwt.sign({ username, id: userDoc._id }, secret, {}, (err, token) => {
                 if (err) throw err;
-                res.cookie("token", token).json({
+                res.cookie("token", token, {
+                    sameSite: 'none', // Important for cross-site cookies
+                    secure: true,    // Required when sameSite='none'
+                    httpOnly: true   // Recommended for security (prevents JavaScript access to the cookie)
+                }).json({
                     id: userDoc._id,
                     username,
                 });
-            })
+            });
         } else {
             res.status(400).json("Wrong credentials.")
         }
@@ -105,6 +109,10 @@ app.post("/post", uploadMiddleware.single('file'), async (req, res) => {
 
     const { token } = req.cookies;
 
+    if (!token) {
+        return res.status(401).send("No token provided.");
+    }
+    
     jwt.verify(token, secret, {}, async (err, info) => {
         if (err) throw err;
         const {
