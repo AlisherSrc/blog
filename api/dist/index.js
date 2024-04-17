@@ -24,6 +24,7 @@ app.use('/uploads', express.static(__dirname + '/uploads'));
 const secret = process.env.JWT_SECRET;
 
 mongoose.connect('mongodb+srv://blog:yIt8sO9k8UTVzXjB@cluster0.cz99cmu.mongodb.net/?retryWrites=true&w=majority');
+// mongoose.connect('mongodb+srv://blog:yIt8sO9k8UTVzXjB@cluster0.cz99cmu.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0')
 
 app.post('/register', async (req, res) => {
     const { username, password } = req.body;

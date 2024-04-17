@@ -6,8 +6,8 @@ import { HOST } from "../../globals";
 import Toggle from "../toggle";
 
 const Navbar = () => {
-    const {setUserInfo,userInfo} = useContext(UserContext);
-    const {isDark,setIsDark} = useContext(UserContext);
+    const { setUserInfo, userInfo } = useContext(UserContext);
+    const { isDark, setIsDark } = useContext(UserContext);
 
     useEffect(() => {
         fetch(`${HOST}/profile`, {
@@ -19,13 +19,13 @@ const Navbar = () => {
         }).catch((err) => {
             console.log(err);
         })
-    },[]);
+    }, []);
 
 
     const username = userInfo?.username;
 
     const logout = () => {
-        fetch(`${HOST}/logout`,{
+        fetch(`${HOST}/logout`, {
             credentials: 'include',
             method: "POST",
         });
@@ -41,7 +41,14 @@ const Navbar = () => {
                     <a onClick={logout}>Logout</a>
                 </>
             )}
-            <Toggle isChecked={isDark} handleChange={() => setIsDark(!isDark)}/>
+            {!username && (
+                <>
+                    <Link to="/login">Login</Link>
+                    <Link to="/register">Register</Link>
+                </>
+            )}
+            <Toggle isChecked={isDark} handleChange={() => setIsDark(!isDark)} />
+
         </nav>
     </>
 }

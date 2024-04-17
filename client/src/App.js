@@ -41,7 +41,7 @@ function App() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="theme-color" content="#fff" />
         <meta name="description" content="AlisherSk - blog about web development" />
-        <link rel="manifest" href="https://alishersk-blog.web.app/manifest.json" />
+        <link rel="manifest" href="./manifest.json" />
       </Helmet>
       <Routes>
         <Route path='/' element={<Layout />}>
