@@ -14,6 +14,12 @@ const multer = require("multer");
 const fs = require('fs');
 const { body, validationResult } = require("express-validator");
 
+
+app.use(cors({
+    origin: "http://localhost:3000", // Replace with your actual frontend host
+    credentials: true, // This allows cookies to be sent with requests
+}));
+
 const requireAdmin = async (req, res, next) => {
     const { token } = req.cookies;
     if (!token) {
@@ -48,12 +54,6 @@ const uploadMiddleware = multer({
     limits: { fileSize: 1024 * 1024 * 5 },
     fileFilter: fileFilter
 });
-
-
-app.use(cors({
-    credentials: true,
-    origin: "*"  // This is insecure, use only for testing
-}));
 
 app.use(express.json());
 app.use(cookieParser());
