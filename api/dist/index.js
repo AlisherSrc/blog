@@ -12,8 +12,43 @@ const express = require("express");
 const app = express();
 const multer = require("multer");
 const fs = require('fs');
+const { body, validationResult } = require("express-validator");
 
-const uploadMiddleware = multer({ dest: 'uploads/' });
+const requireAdmin = async (req, res, next) => {
+    const { token } = req.cookies;
+    if (!token) {
+        return res.status(401).json({ message: "No token provided" });
+    }
+    try {
+        const decoded = jwt.verify(token, secret);
+        const user = await User.findById(decoded.id);
+        if (user.role !== 'admin') {
+            return res.status(403).json({ message: "Requires admin role" });
+        }
+        req.user = user; // Store the user in the request for further use
+        next();
+    } catch (err) {
+        res.status(401).json({ message: "Invalid token" });
+    }
+};
+
+
+// Check data types
+const fileFilter = (req, file, cb) => {
+    const allowedMimeTypes = new Set(['image/jpeg', 'image/png', 'image/gif']);
+    if (allowedMimeTypes.has(file.mimetype)) {
+        cb(null, true);
+    } else {
+        cb(new Error('Invalid file type'), false);
+    }
+};
+
+const uploadMiddleware = multer({
+    dest: 'uploads/',
+    limits: { fileSize: 1024 * 1024 * 5 },
+    fileFilter: fileFilter
+});
+
 
 app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
 app.use(express.json());
@@ -26,23 +61,32 @@ const secret = process.env.JWT_SECRET;
 mongoose.connect('mongodb+srv://blog:yIt8sO9k8UTVzXjB@cluster0.cz99cmu.mongodb.net/?retryWrites=true&w=majority');
 // mongoose.connect('mongodb+srv://blog:yIt8sO9k8UTVzXjB@cluster0.cz99cmu.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0')
 
-app.post('/register', async (req, res) => {
-    const { username, password } = req.body;
+app.post('/register',// Validation middleware
+    body('username').isAlphanumeric().withMessage('Username must be alphanumeric'),
+    body('password').isLength({ min: 5 }).withMessage('Password must be at least 5 characters long'),
+    async (req, res) => {
+        // Check for validation errors
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
+        }
+        const { username, password } = req.body;
 
-    const saltRounds = 10; // or another appropriate number
-    const salt = bcrypt.genSaltSync(saltRounds);
-    const hashedPassword = bcrypt.hashSync(password, salt);
+        const saltRounds = 10; // or another appropriate number
+        const salt = bcrypt.genSaltSync(saltRounds);
+        const hashedPassword = bcrypt.hashSync(password, salt);
 
-    try {
-        const userDoc = await User.create({
-            username,
-            password: hashedPassword
-        });
-        res.json(userDoc);
-    } catch (error) {
-        res.status(400).json(error);
-    }
-});
+        try {
+            const userDoc = await User.create({
+                username,
+                password: hashedPassword,
+                role: "user"
+            });
+            res.json(userDoc);
+        } catch (error) {
+            res.status(400).json(error);
+        }
+    });
 
 app.post('/login', async (req, res) => {
     const { username, password } = req.body;
@@ -53,7 +97,12 @@ app.post('/login', async (req, res) => {
         if (passOk) {
             jwt.sign({ username, id: userDoc._id }, secret, {}, (err, token) => {
                 if (err) throw err;
-                res.cookie("token", token).json({
+                res.cookie("token", token, {
+                    httpOnly: true,
+                    // secure: true, // set to true if using https
+                    sameSite: 'strict', // can use 'lax' or 'strict'
+                    expires: new Date(Date.now() + 3600000) // cookie will be removed after 1 hour
+                }).json({
                     id: userDoc._id,
                     username
                 });
@@ -76,7 +125,8 @@ app.get("/profile", (req, res) => {
 });
 
 app.post("/logout", (req, res) => {
-    res.cookie("token", '').json("ok");
+    res.clearCookie("token", { path: '/' });
+    res.status(200).json("ok");
 });
 
 app.post("/post", uploadMiddleware.single('file'), async (req, res) => {
@@ -136,20 +186,28 @@ app.put('/post/:id', uploadMiddleware.single('file'), async (req, res) => {
     }
     const { token } = req.cookies;
 
-    jwt.verify(token, secret, {}, async (err, info) => {
-        if (err) throw err;
+    jwt.verify(token, secret, {}, async (err, decodedToken) => {
+        if (err) {
+            return res.status(401).json("Invalid token");
+        }
+
+        const user = await User.findById(decodedToken.id);
+        const postDoc = await Post.findById(id);
+
+        // Check if the user is the author or an admin
+        const isAuthor = postDoc.author.equals(user._id);
+        const isAdmin = user.role === 'admin';
+        
+        if (!isAuthor && !isAdmin) {
+            return res.status(403).json("You are not authorized to edit this post");
+        }
+
         const {
             title,
             description,
             content,
             id
         } = req.body;
-
-        const postDoc = await Post.findById(id);
-        const isAuthor = JSON.stringify(postDoc.author) === JSON.stringify(info.id);
-        if (!isAuthor) {
-            return res.status(400).json("You are not the author");
-        }
 
         await postDoc.updateOne({
             title,
@@ -174,6 +232,15 @@ app.delete('/post/:id', async (req, res) => {
     } catch (error) {
         res.status(500).json("Error deleting post");
     }
+});
+
+app.use((error, req, res, next) => {
+    console.error(error); // log the error, consider using a logging service
+    res.status(error.status || 500).json({
+        error: {
+            message: error.message || 'An unexpected error occurred'
+        }
+    });
 });
 
 app.listen(4000);

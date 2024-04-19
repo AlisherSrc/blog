@@ -28,7 +28,7 @@ const Navbar = () => {
         fetch(`${HOST}/logout`, {
             credentials: 'include',
             method: "POST",
-        });
+        }).catch((err) => console.log(err));
         setUserInfo(null);
     }
 
