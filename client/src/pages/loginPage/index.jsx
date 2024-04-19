@@ -25,7 +25,7 @@ const Login = () => {
         if (response.ok) {
             response.json().then(userInfo => {
                 setUserInfo(userInfo);
-                console.log(userInfo);
+                console.log("login" + userInfo.role + " " + userInfo._id + " " + userInfo.username);
                 nav("/");
             });
             

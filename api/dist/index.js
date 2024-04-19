@@ -103,7 +103,9 @@ app.post('/login', async (req, res) => {
                     sameSite: 'strict', // can use 'lax' or 'strict'
                     expires: new Date(Date.now() + 3600000) // cookie will be removed after 1 hour
                 }).json({
-                    id: userDoc._id
+                    id: userDoc._id,
+                    username,
+                    role: userDoc.role
                 });
             });
         } else {
