@@ -14,7 +14,7 @@ const multer = require("multer");
 const fs = require('fs');
 const { body, validationResult } = require("express-validator");
 
-
+console.log("Lox")
 app.use(cors({
     origin: "http://localhost:3000", // Replace with your actual frontend host
     credentials: true, // This allows cookies to be sent with requests
@@ -61,6 +61,7 @@ app.use(cookieParser());
 app.use('/uploads', express.static(__dirname + '/uploads'));
 
 const secret = process.env.JWT_SECRET;
+console.log("Lox2")
 
 mongoose.connect('mongodb+srv://blog:yIt8sO9k8UTVzXjB@cluster0.cz99cmu.mongodb.net/?retryWrites=true&w=majority');
 // mongoose.connect('mongodb+srv://blog:yIt8sO9k8UTVzXjB@cluster0.cz99cmu.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0')
@@ -120,6 +121,7 @@ app.post('/login', async (req, res) => {
         res.status(400).json(error);
     }
 });
+console.log("Lox3")
 
 app.get("/profile", (req, res) => {
     const { token } = req.cookies;
@@ -224,6 +226,7 @@ app.put('/post/:id', uploadMiddleware.single('file'), async (req, res) => {
         res.json(postDoc);
     });
 });
+console.log("Lox4")
 
 app.delete('/post/:id', async (req, res) => {
     const { id } = req.params;
@@ -247,5 +250,6 @@ app.use((error, req, res, next) => {
         }
     });
 });
+console.log("Lox5")
 
 app.listen(4000);
