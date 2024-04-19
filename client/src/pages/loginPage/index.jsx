@@ -25,8 +25,10 @@ const Login = () => {
         if (response.ok) {
             response.json().then(userInfo => {
                 setUserInfo(userInfo);
+                console.log(userInfo);
                 nav("/");
             });
+            
         }else {
             alert("Wrong credentials");
         }

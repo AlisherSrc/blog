@@ -93,6 +93,7 @@ app.post('/login', async (req, res) => {
 
     try {
         const userDoc = await User.findOne({ username });
+        console.log(userDoc);
         const passOk = bcrypt.compareSync(password, userDoc.password);
         if (passOk) {
             jwt.sign({ username, id: userDoc._id }, secret, {}, (err, token) => {
@@ -105,9 +106,11 @@ app.post('/login', async (req, res) => {
                 }).json({
                     id: userDoc._id,
                     username,
-                    role: userDoc.role.
+                    role: userDoc.role
                 });
             });
+
+            console.log(userDoc.role);
         } else {
             res.status(400).json("Wrong credentials.");
         }
