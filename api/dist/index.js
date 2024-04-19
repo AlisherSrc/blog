@@ -104,7 +104,8 @@ app.post('/login', async (req, res) => {
                     expires: new Date(Date.now() + 3600000) // cookie will be removed after 1 hour
                 }).json({
                     id: userDoc._id,
-                    username
+                    username,
+                    role: userDoc.role.
                 });
             });
         } else {
