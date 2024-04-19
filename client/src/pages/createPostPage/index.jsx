@@ -24,19 +24,28 @@ const CreatePost = () => {
         data.set('content', content);
         data.set('file', files[0]);
 
-        const response = await fetch(`${HOST}/post`, {
-            method: 'POST',
-            body: data,
-            credentials: 'include',
-        });
-
-        if (response.ok) {
-            nav('/');
-        } else {
-            const errorText = await response.text(); // or response.json() if the server responds with JSON
-            console.error('Failed to create post:', errorText);
-            alert(`Something went wrong: ${errorText}`);
+        let response; // Declare response outside to make it accessible throughout
+        try {
+            response = await fetch(`${HOST}/post`, {
+                method: 'POST',
+                body: data,
+                credentials: 'include',
+            });
+            nav('/'); // Navigate on success
+        } catch (err) {
+            console.log(err)
+            // const errorText = await response.text(); // Accessible here because it's declared in outer scope
+            // console.error('Failed to create post:', errorText);
+            // alert(`Something went wrong: ${errorText}`);
         }
+
+        // if (response.ok) {
+        //     nav('/');
+        // } else {
+        //     const errorText = await response.text(); // or response.json() if the server responds with JSON
+        //     console.error('Failed to create post:', errorText);
+        //     alert(`Something went wrong: ${errorText}`);
+        // }
     }
 
     return (

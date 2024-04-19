@@ -50,7 +50,11 @@ const uploadMiddleware = multer({
 });
 
 
-app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
+app.use(cors({
+    credentials: true,
+    origin: "*"  // This is insecure, use only for testing
+}));
+
 app.use(express.json());
 app.use(cookieParser());
 // for responding with files without creating an endpoint for it

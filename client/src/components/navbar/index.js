@@ -28,6 +28,8 @@ const Navbar = () => {
         fetch(`${HOST}/logout`, {
             credentials: 'include',
             method: "POST",
+        }).then((val) => {
+            document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/";
         }).catch((err) => console.log(err));
         setUserInfo(null);
     }
