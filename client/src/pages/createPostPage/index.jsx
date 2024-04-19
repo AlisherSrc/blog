@@ -4,7 +4,7 @@ import 'react-quill/dist/quill.snow.css';
 import { useNavigate } from 'react-router-dom';
 import Editor from '../../tools/editor';
 import { HOST } from '../../globals';
-
+import { validateAndSanitizeInput } from '../../tools/utilities'; // Import the validation functions
 
 const CreatePost = () => {
     const [title, setTitle] = useState('');
@@ -17,44 +17,49 @@ const CreatePost = () => {
     const createNewPost = async (e) => {
         e.preventDefault();
 
+        const validatedTitle = validateAndSanitizeInput(title);
+        const validatedDescription = validateAndSanitizeInput(description);
+        const validatedContent = validateAndSanitizeInput(content);
+
+        if (!validatedTitle || !validatedDescription || !validatedContent) {
+            alert('Invalid input detected. Please correct your input and try again.');
+            return;
+        }
+
         const data = new FormData();
+        data.set('title', validatedTitle);
+        data.set('description', validatedDescription);
+        data.set('content', validatedContent);
+        if (files && files[0]) { // Ensure there's a file selected
+            data.set('file', files[0]);
+        }
 
-        data.set('title', title);
-        data.set('description', description);
-        data.set('content', content);
-        data.set('file', files[0]);
-
-        let response; // Declare response outside to make it accessible throughout
         try {
-            response = await fetch(`${HOST}/post`, {
+            const response = await fetch(`${HOST}/post`, {
                 method: 'POST',
                 body: data,
                 credentials: 'include',
             });
-            nav('/'); // Navigate on success
+            if (response.ok) {
+                nav('/');
+            } else {
+                const errorText = await response.text();
+                console.error('Failed to create post:', errorText);
+                alert(`Something went wrong: ${errorText}`);
+            }
         } catch (err) {
-            console.log(err)
-            // const errorText = await response.text(); // Accessible here because it's declared in outer scope
-            // console.error('Failed to create post:', errorText);
-            // alert(`Something went wrong: ${errorText}`);
+            console.log(err);
+            alert('An error occurred while trying to create the post.');
         }
-
-        // if (response.ok) {
-        //     nav('/');
-        // } else {
-        //     const errorText = await response.text(); // or response.json() if the server responds with JSON
-        //     console.error('Failed to create post:', errorText);
-        //     alert(`Something went wrong: ${errorText}`);
-        // }
     }
 
     return (
-        <form className={`${styles.form}`} onSubmit={(e) => createNewPost(e)}>
-            <input type='title' placeholder='title' value={title} onChange={(e) => setTitle(e.target.value)} />
-            <input type="summary" placeholder='description' value={description} onChange={(e) => setDescription(e.target.value)} />
+        <form className={`${styles.form}`} onSubmit={createNewPost}>
+            <input type='text' placeholder='Title' value={title} onChange={(e) => setTitle(e.target.value)} />
+            <input type="text" placeholder='Description' value={description} onChange={(e) => setDescription(e.target.value)} />
             <input type='file' onChange={(e) => setFiles(e.target.files)} />
             <Editor value={content} onChange={newValue => setContent(newValue)} />
-            <button>Create post</button>
+            <button type="submit">Create Post</button>
         </form>
     )
 }

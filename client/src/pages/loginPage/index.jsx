@@ -3,11 +3,11 @@ import styles from './login.module.css';
 import { useNavigate } from 'react-router-dom';
 import { UserContext } from '../../UserContext';
 import { HOST } from '../../globals';
+import { validateAndSanitizeInput, validatePassword } from '../../tools/utilities'
 
 
 const Login = () => {
     const {setUserInfo} = useContext(UserContext);
-
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const nav = useNavigate();
@@ -15,9 +15,20 @@ const Login = () => {
     const login = async (e) => {
         e.preventDefault();
 
+        // Validate and sanitize inputs
+        const sanitizedUsername = validateAndSanitizeInput(username);
+        const sanitizedPassword = validateAndSanitizeInput(password);
+
+        // Check if either input is invalid
+        if (!sanitizedUsername || !sanitizedPassword) {
+            alert("Invalid input. Please check your credentials and try again.");
+            return;
+        }
+
+        // Proceed with the login request if inputs are valid
         const response = await fetch(`${HOST}/login`, {
             method: "POST",
-            body: JSON.stringify({ username, password }),
+            body: JSON.stringify({ username: sanitizedUsername, password: sanitizedPassword }),
             headers: { "Content-Type": "application/json" },
             credentials: 'include',
         });
@@ -25,14 +36,13 @@ const Login = () => {
         if (response.ok) {
             response.json().then(userInfo => {
                 setUserInfo(userInfo);
-                console.log("login" + userInfo.role + " " + userInfo.id + " " + userInfo.username);
+                console.log(userInfo);
                 nav("/");
             });
-            
-        }else {
+        } else {
             alert("Wrong credentials");
         }
-    }
+    };
 
     return (
         <div className={`${styles.login}`}>
