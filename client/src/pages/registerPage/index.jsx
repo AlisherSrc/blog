@@ -18,7 +18,9 @@ const Register = () => {
         if(response.status === 200){
             alert('registration was successfull');
         }else{
-            alert('registration failed');
+            response.json().then((res) => {
+                alert(res.errors[0].msg);
+            })
         }
 
     }

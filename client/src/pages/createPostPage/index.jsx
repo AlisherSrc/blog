@@ -43,9 +43,9 @@ const CreatePost = () => {
             if (response.ok) {
                 nav('/');
             } else {
-                const errorText = await response.text();
-                console.error('Failed to create post:', errorText);
-                alert(`Something went wrong: ${errorText}`);
+                const errorText = await response.json();
+                console.error('Failed to create post:', errorText.error.message);
+                alert(`Something went wrong: ${errorText.error.message}`);
             }
         } catch (err) {
             console.log(err);

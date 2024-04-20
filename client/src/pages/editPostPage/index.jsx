@@ -26,31 +26,45 @@ const EditPost = () => {
 
     const editPost = async (e) => {
         e.preventDefault();
-
+    
         const validatedTitle = validateAndSanitizeInput(title);
         const validatedDescription = validateAndSanitizeInput(description);
         const validatedContent = validateAndSanitizeInput(content);
-
+    
         if (!validatedTitle || !validatedDescription || !validatedContent) {
             alert('Invalid input detected. Please correct your input and try again.');
             return;
         }
-
+    
         const data = new FormData();
         data.set('title', validatedTitle);
         data.set('description', validatedDescription);
         data.set('content', validatedContent);
         data.set('id', id);
-        files?.[0] && data.set('file', files?.[0]);
-
-        await fetch(`${HOST}/post/${id}`, {
-            method: "PUT",
-            body: data,
-            credentials: 'include'
-        });
-
-        nav(`/post/${id}`);
+        if (files && files[0]) {
+            data.set('file', files[0]);
+        }
+    
+        try {
+            const response = await fetch(`${HOST}/post/${id}`, {
+                method: "PUT",
+                body: data,
+                credentials: 'include'
+            });
+    
+            if (!response.ok) {
+                const errorText = await response.json();
+                alert(`${errorText.message}`);
+                throw new Error(`HTTP status ${response.status}`);
+            }
+    
+            alert("Edited!");
+            nav(`/post/${id}`);
+        } catch (error) {
+            console.error('Fetch error:', error);
+        }
     }
+    
 
     const deletePost = async (e) => {
         e.preventDefault();

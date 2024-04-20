@@ -60,6 +60,14 @@ app.use(cookieParser());
 // for responding with files without creating an endpoint for it
 app.use('/uploads', express.static(__dirname + '/uploads'));
 
+app.use((err, req, res, next) => {
+    console.error(err.stack);  // Log error stack for debugging
+    const status = err.status || 500;
+    const message = err.message || "Internal Server Error";
+    res.status(status).json({ error: { message, status } });
+});
+
+
 const secret = process.env.JWT_SECRET;
 console.log("Lox2")
 
@@ -97,11 +105,15 @@ app.post('/login', async (req, res) => {
     const { username, password } = req.body;
 
     try {
+        if(!username || !password) return res.status(500).json({message: "No username or password was provided"})
         const userDoc = await User.findOne({ username });
         const passOk = bcrypt.compareSync(password, userDoc.password);
         if (passOk) {
             jwt.sign({ username, id: userDoc._id }, secret, {}, (err, token) => {
-                if (err) throw err;
+                if (err) {
+                    console.error(err);
+                    return res.status(500).json({ message: "Error generating token" });
+                }
                 res.cookie("token", token, {
                     httpOnly: true,
                     // secure: true, // set to true if using https
@@ -117,16 +129,23 @@ app.post('/login', async (req, res) => {
             res.status(400).json("Wrong credentials.");
         }
     } catch (error) {
-        console.log(error);
-        res.status(400).json(error);
+        console.error(error);
+        res.status(500).json({ message: "An error occurred while processing your request." });
     }
 });
 console.log("Lox3")
 
 app.get("/profile", (req, res) => {
     const { token } = req.cookies;
+
+    if (!token) {
+        return res.status(401).json({ message: "No token provided" });
+    }
+
     jwt.verify(token, secret, {}, (err, info) => {
-        if (err) throw err;
+        if (err) {
+            return res.status(401).send("Invalid token.");
+        }
         res.json(info);
     });
 });
@@ -148,8 +167,15 @@ app.post("/post", uploadMiddleware.single('file'), async (req, res) => {
 
     const { token } = req.cookies;
 
+    if (!token) {
+        return res.status(401).json({ message: "No token provided" });
+    }
+
     jwt.verify(token, secret, {}, async (err, info) => {
-        if (err) throw err;
+        if (err) {
+            return res.status(401).send("Invalid token.");
+        }
+
         const {
             title,
             description,
@@ -183,49 +209,86 @@ app.get('/post/:id', async (req, res) => {
 });
 
 app.put('/post/:id', uploadMiddleware.single('file'), async (req, res) => {
+    // Define newPath outside of the conditional scope so it can be used later.
     let newPath = null;
+
+    // Extract id from req.params, not req.body
+    const { id } = req.params;
+
+    // Process the file if it exists
     if (req.file) {
         const { originalname, path } = req.file;
-        const parts = originalname.split(".");
-        const ext = parts[parts.length - 1];
-        newPath = path + "." + ext;
-        fs.renameSync(path, newPath);
+        try {
+            const parts = originalname.split(".");
+            const ext = parts[parts.length - 1];
+            newPath = `${path}.${ext}`;
+            fs.renameSync(path, newPath);
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json({ message: "Error processing file upload" });
+        }
     }
+
+    // Token handling
     const { token } = req.cookies;
+    if (!token) {
+        return res.status(401).json({ message: "No token provided" });
+    }
+
+    // Secret should be defined or come from environment variables
+    const secret = process.env.JWT_SECRET;
+    if (!secret) {
+        console.error('JWT secret is not set.');
+        return res.status(500).json({ message: "Server misconfiguration" });
+    }
 
     jwt.verify(token, secret, {}, async (err, decodedToken) => {
         if (err) {
-            return res.status(401).json("Invalid token");
+            return res.status(401).json({ message: "Invalid token" });
         }
 
-        const user = await User.findById(decodedToken.id);
-        const postDoc = await Post.findById(id);
+        try {
+            const user = await User.findById(decodedToken.id);
+            if (!user) {
+                return res.status(401).json({ message: "User not found" });
+            }
 
-        // Check if the user is the author or an admin
-        const isAuthor = postDoc.author.equals(user._id);
-        const isAdmin = user.role === 'admin';
-        
-        if (!isAuthor && !isAdmin) {
-            return res.status(403).json("You are not authorized to edit this post");
+            const postDoc = await Post.findById(id);
+            if (!postDoc) {
+                return res.status(404).json({ message: "Post not found" });
+            }
+
+            // Check if the user is the author or an admin
+            const isAuthor = postDoc.author.equals(user._id);
+            const isAdmin = user.role === 'admin';
+
+            if (!isAuthor && !isAdmin) {
+                return res.status(403).json({ message: "You are not authorized to edit this post" });
+            }
+
+            // Update the post
+            const { title, description, content } = req.body;
+            const updateData = {
+                title,
+                description,
+                content,
+                cover: newPath || postDoc.cover
+            };
+
+            // Validate your data before updating
+            // If there's a validation function, call it here
+            // ...
+
+            await Post.findByIdAndUpdate(id, updateData, { new: true });
+
+            res.json(updateData); // It's often good practice to return the updated document
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ message: "Server error during the post update" });
         }
-
-        const {
-            title,
-            description,
-            content,
-            id
-        } = req.body;
-
-        await postDoc.updateOne({
-            title,
-            description,
-            content,
-            cover: newPath ? newPath : postDoc.cover
-        });
-
-        res.json(postDoc);
     });
 });
+
 console.log("Lox4")
 
 app.delete('/post/:id', async (req, res) => {
@@ -242,14 +305,7 @@ app.delete('/post/:id', async (req, res) => {
     }
 });
 
-app.use((error, req, res, next) => {
-    console.error(error); // log the error, consider using a logging service
-    res.status(error.status || 500).json({
-        error: {
-            message: error.message || 'An unexpected error occurred'
-        }
-    });
-});
+
 console.log("Lox5")
 
 app.listen(4000);
