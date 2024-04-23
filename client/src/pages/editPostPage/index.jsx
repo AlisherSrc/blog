@@ -73,6 +73,7 @@ const EditPost = () => {
         if (confirmBox) {
             await fetch(`${HOST}/post/${id}`, {
                 method: "DELETE",
+                credentials: 'include'
             });
             nav('/');
         }

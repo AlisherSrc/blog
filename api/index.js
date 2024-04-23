@@ -292,7 +292,58 @@ app.put('/post/:id', uploadMiddleware.single('file'), async (req, res) => {
 console.log("Lox4")
 
 app.delete('/post/:id', async (req, res) => {
+
+    // Extract id from req.params, not req.body
     const { id } = req.params;
+
+    // Token handling
+    const { token } = req.cookies;
+    if (!token) {
+        return res.status(401).json({ message: "No token provided" });
+    }
+
+    // Secret should be defined or come from environment variables
+    const secret = process.env.JWT_SECRET;
+    if (!secret) {
+        console.error('JWT secret is not set.');
+        return res.status(500).json({ message: "Server misconfiguration" });
+    }
+
+    jwt.verify(token, secret, {}, async (err, decodedToken) => {
+        if (err) {
+            return res.status(401).json({ message: "Invalid token" });
+        }
+
+        try {
+            const user = await User.findById(decodedToken.id);
+            if (!user) {
+                return res.status(401).json({ message: "User not found" });
+            }
+
+            const postDoc = await Post.findById(id);
+            if (!postDoc) {
+                return res.status(404).json({ message: "Post not found" });
+            }
+
+            // Check if the user is the author or an admin
+            const isAuthor = postDoc.author.equals(user._id);
+            const isAdmin = user.role === 'admin';
+
+            if (!isAuthor && !isAdmin) {
+                return res.status(403).json({ message: "You are not authorized to edit this post" });
+            }
+
+            const deletedPost = await Post.findByIdAndDelete(id);
+            if (!deletedPost) {
+                return res.status(404).json('Post not found');
+            }
+            res.json("Post deleted succesfully");
+        } catch (error) {
+            res.status(500).json("Error deleting post");
+        }
+    });
+});
+    /*const { id } = req.params;
 
     try {
         const deletedPost = await Post.findByIdAndDelete(id);
@@ -303,7 +354,7 @@ app.delete('/post/:id', async (req, res) => {
     } catch (error) {
         res.status(500).json("Error deleting post");
     }
-});
+});*/
 
 
 console.log("Lox5")
