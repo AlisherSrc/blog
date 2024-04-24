@@ -35,7 +35,7 @@ const Navbar = () => {
     }
 
     return <>
-        <Link to="/" className={`${styles.logo}`}>AlisherSk Blog</Link>
+        <Link to="/" className={`${styles.logo}`}>Hackery Blog</Link>
         <nav>
             {username && (
                 <>
