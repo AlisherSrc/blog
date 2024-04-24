@@ -21,7 +21,7 @@ const rateLimiter = rateLimit({
     max: 1000
 });
 
-//app.use(rateLimiter);
+app.use(rateLimiter);
 
 console.log("Lox");
 app.use(cors({
