@@ -18,10 +18,12 @@ const { body, validationResult } = require("express-validator");
 
 const rateLimiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 1000
+    max: 100
 });
 
 app.use(rateLimiter);
+
+app.disable('x-powered-by');
 
 console.log("Lox");
 app.use(cors({
