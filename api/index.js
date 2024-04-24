@@ -3,6 +3,7 @@ require('dotenv').config();
 const User = require('./models/User');
 const Post = require('./models/Post');
 
+const rateLimit = require("express-rate-limit");
 const cors = require("cors");
 const mongoose = require("mongoose");
 const bcrypt = require('bcryptjs');
@@ -14,7 +15,14 @@ const multer = require("multer");
 const fs = require('fs');
 const { body, validationResult } = require("express-validator");
 
-console.log("Lox")
+const rateLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100
+});
+
+app.use(rateLimiter);
+
+console.log("Lox");
 app.use(cors({
     origin: "http://localhost:3000", // Replace with your actual frontend host
     credentials: true, // This allows cookies to be sent with requests
@@ -69,7 +77,7 @@ app.use((err, req, res, next) => {
 
 
 const secret = process.env.JWT_SECRET;
-console.log("Lox2")
+console.log("Lox2");
 
 mongoose.connect('mongodb+srv://blog:yIt8sO9k8UTVzXjB@cluster0.cz99cmu.mongodb.net/?retryWrites=true&w=majority');
 // mongoose.connect('mongodb+srv://blog:yIt8sO9k8UTVzXjB@cluster0.cz99cmu.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0')
@@ -133,7 +141,7 @@ app.post('/login', async (req, res) => {
         res.status(500).json({ message: "An error occurred while processing your request." });
     }
 });
-console.log("Lox3")
+console.log("Lox3");
 
 app.get("/profile", (req, res) => {
     const { token } = req.cookies;
@@ -289,7 +297,7 @@ app.put('/post/:id', uploadMiddleware.single('file'), async (req, res) => {
     });
 });
 
-console.log("Lox4")
+console.log("Lox4");
 
 app.delete('/post/:id', async (req, res) => {
 
@@ -357,6 +365,6 @@ app.delete('/post/:id', async (req, res) => {
 });*/
 
 
-console.log("Lox5")
+console.log("Lox5");
 
 app.listen(4000);
