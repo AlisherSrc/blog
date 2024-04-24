@@ -3,6 +3,7 @@ require('dotenv').config();
 const User = require('./models/User');
 const Post = require('./models/Post');
 
+const htmlspecialchars = require('htmlspecialchars');
 const rateLimit = require("express-rate-limit");
 const cors = require("cors");
 const mongoose = require("mongoose");
@@ -184,11 +185,12 @@ app.post("/post", uploadMiddleware.single('file'), async (req, res) => {
             return res.status(401).send("Invalid token.");
         }
 
-        const {
+        let {
             title,
             description,
             content
         } = req.body;
+        title = htmlspecialchars(title); description = htmlspecialchars(description); content = htmlspecialchars(content); 
 
         const postDoc = await Post.create({
             title,
@@ -275,7 +277,8 @@ app.put('/post/:id', uploadMiddleware.single('file'), async (req, res) => {
             }
 
             // Update the post
-            const { title, description, content } = req.body;
+            let { title, description, content } = req.body;
+            title = htmlspecialchars(title); description = htmlspecialchars(description); content = htmlspecialchars(content); 
             const updateData = {
                 title,
                 description,
