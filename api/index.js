@@ -18,10 +18,10 @@ const { body, validationResult } = require("express-validator");
 
 const rateLimiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 100
+    max: 1000
 });
 
-app.use(rateLimiter);
+//app.use(rateLimiter);
 
 console.log("Lox");
 app.use(cors({
@@ -172,6 +172,10 @@ app.post("/post", uploadMiddleware.single('file'), async (req, res) => {
     const newPath = path + "." + ext;
     fs.renameSync(path, newPath);
 
+    const allowed_ext = ["jpg","jpeg","png","gif"];
+    if (!allowed_ext.includes(ext)) {
+        return res.status(400).json({ message: "Only jpegs, pngs and gifs are allowed" });
+    } //I'm sorry for putting it here (no, I'm not)
     // Done with file
 
     const { token } = req.cookies;
