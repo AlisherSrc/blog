@@ -16,7 +16,7 @@ const { body, validationResult } = require("express-validator");
 
 console.log("Lox")
 app.use(cors({
-    origin: "https://alisher-sk.onrender.com", // Replace with your actual frontend host
+    origin: "https://alishersk-blog.web.app", // Replace with your actual frontend host
     credentials: true, // This allows cookies to be sent with requests
 }));
 
